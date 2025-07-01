@@ -5,12 +5,13 @@ import {
   OneToOne,
   JoinColumn,
   ManyToOne,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { MovieDetail } from './movie-detail.entity';
 import { BaseEntity } from 'src/common/entity/base.entity';
 import { Director } from 'src/director/entity/director.entity';
-
-// ManyToMany Genre -> 영화는 여러 개의 장르를 가질 수 있고, 장르는 여러 개의 영화에 속할 수 있음
+import { Genre } from 'src/genre/entities/genre.entity';
 
 @Entity()
 export class Movie extends BaseEntity {
@@ -20,8 +21,9 @@ export class Movie extends BaseEntity {
   @Column()
   title: string;
 
-  @Column()
-  genre?: string;
+  @ManyToMany(() => Genre, (genre) => genre.movies)
+  @JoinTable()
+  genres: Genre[];
 
   @OneToOne(() => MovieDetail, (movieDetail) => movieDetail.movie, {
     cascade: false,
